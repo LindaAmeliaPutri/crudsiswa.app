@@ -8,55 +8,64 @@
     <body>
     <h1>Tambahkan Data Siswa</h1>
     <p>Halaman Untuk Menambah Data Siswa</p>
-        <from>
+        <form action="/siswa/store" method="POST">
+            @csrf
             <div>
-            <table>Class Id</table>
+            <label>Class Id</label>
             <br>
-            <select nama ="kalas_id">
-                <option value="">XII PPLG 1</option>
-                <option value="">XII PPLG 2</option>
-                <option value="">XII PPLG 3</option>
+            <select name ="clas_id">
+                <option value="1">XII PPLG 1</option>
+                <option value="2">XII PPLG 2</option>
+                <option value="3">XII PPLG 3</option>
             </select>
             </div>
             <br>
             <div>
                 <label>Nama</label>
                 <br>
-                <input type="text" nama="name"> 
+                <input type="text" name="name"> 
             </div>
             <br>
             <div>
                 <div>
                 <label>Nisn</label>
                 <br>
-                <input type="text" nama="nisn"> 
+                <input type="text" name="nisn"> 
             </div>
             <br>
             <div><div>
                 <label>Alamat</label>
                 <br>
-                <input type="text" nama="alamat"> 
+                <input type="text" name="alamat"> 
             </div>
             <br>
             <div>
                 <div>
                 <label>Email</label>
                 <br>
-                <input type="text" nama="Email"> 
+                <input type="text" name="email"> 
             </div>
             <br>
             <div>
                 <div>
                 <label>Password</label>
                 <br>
-                <input type="Password" nama="no_handphone"> 
+                <input type="password" name="password"> 
             </div>
             <br>
             <div>
                 <div>
+                <label>No Telepon</label>
+                <br>
+                <input type="tel" name="no_handphone"> 
+            </div>
+            <br>
+
+            <div>
+                <div>
                 <label>Foto</label>
                 <br>
-                <input type="file" nama="photo"> 
+                <input type="file" name="photo"> 
             </div>
             <br>
             <div>
@@ -65,6 +74,6 @@
             <div>
                 <a href="/">Kembali</a>
             </div>
-        </from>
+        </form>
     </body>
 </html>
