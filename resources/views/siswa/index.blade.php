@@ -12,6 +12,7 @@
     <table border ="1px">
             <thead>
                 <tr>
+                    <th>photo</th>
                     <th>Nama</th>
                     <th>Nisn</th>
                     <th>Emain</th>
