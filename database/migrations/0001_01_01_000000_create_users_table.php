@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger("clas_id");
             $table->string('photo');
             $table->string('name');
-            $table->bigInteger('nisn');
+            $table->bigInteger('nisn')->unique();
             $table->text('alamat');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

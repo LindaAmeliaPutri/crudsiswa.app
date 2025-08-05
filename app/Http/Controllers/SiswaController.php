@@ -7,15 +7,26 @@ use Illuminate\Http\Request;
 
 class SiswaController extends Controller
 {
+//fungsi untuk mengarahkan ke halamn index sisa
+public function index(){ 
+    return view ('siswa.index');
+}
+
+//fungsi untuk mengarahkan ke halaman create
+public function create(){
+    return view('siswa.create'); 
+
+}
+
     public function store(Request $request){
     //validasi data
        $validated= $request->validate([
         'name'         =>'required',
-        'nisn'         =>'required',
+        'nisn'         =>'required | unique:users,nisn',
         'alamat'       =>'required',
-        'email'        =>'required',
+        'email'        =>'required | unique:users,email',
         'password'     =>'required',
-        'no_handphone' =>'required'
+        'no_handphone' =>'required | unique:users,no_handphone'
     ]);
 
 
