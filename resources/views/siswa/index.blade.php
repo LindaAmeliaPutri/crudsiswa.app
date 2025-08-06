@@ -14,24 +14,25 @@
                 <tr>
                     <th>photo</th>
                     <th>Nama</th>
-                    <th>Nisn</th>
-                    <th>Emain</th>
+                    <th>Kelas</th>
                     <th>Alamat</th>
                     <th>Opsi</th>
                 </tr>
             </thead>
             <tbody>
+               @foreach ($siswas as $siswa)
                 <tr>
-                    <td>Amelia</td>
-                    <td>123</td>
-                    <td>Amelia@gmail.com</td>
-                    <td>indonesia</td>
+                    <td><img src="{{asset('storage/' .$siswa->photo) }}" alt="Photo Siswa" width="50"></td>
+                    <td>{{$siswa->name}}</td>
+                    <td>{{$siswa->clas->nama}}</td>
+                    <td>{{$siswa->alamat}}</td>
                     <td>
                         <a href="">Edit</a>
                         <a href="">Detail</a>
                         <a href="">Delet</a>
                     </td>
                 </tr>
+               @endforeach
             </tbody>
     </table>
 </body>

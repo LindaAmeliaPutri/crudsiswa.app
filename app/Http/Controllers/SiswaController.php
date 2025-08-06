@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Clas;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -9,12 +11,19 @@ class SiswaController extends Controller
 {
 //fungsi untuk mengarahkan ke halamn index sisa
 public function index(){ 
-    return view ('siswa.index');
+
+    //siapakan data siswa / panggil data kelas
+    $siswas = User::all();
+
+    return view('siswa.index', compact('siswas')); 
+    
 }
 
 //fungsi untuk mengarahkan ke halaman create
 public function create(){
-    return view('siswa.create'); 
+    //siapakan data / panggil data kelas
+    $clases = Clas::all();
+    return view('siswa.create', compact('clases'));
 
 }
 
@@ -22,30 +31,35 @@ public function create(){
     //validasi data
        $validated= $request->validate([
         'name'         =>'required',
+        'kelas_id'     =>'required',
         'nisn'         =>'required | unique:users,nisn',
         'alamat'       =>'required',
         'email'        =>'required | unique:users,email',
         'password'     =>'required',
-        'no_handphone' =>'required | unique:users,no_handphone'
+        'no_handphone' =>'required | unique:users,no_handphone',
+        'photo'        =>'required |image|mimes:jpeg,png,jpg,gif',
     ]);
 
 
 
     //siapa data yang akan di masukan 
      $datasiswa_store=[
-        'clas_id'      =>$request-> clas_id,
-        'photo'        =>'poto.jpg',
-        'name'         =>$request-> name,
-        'nisn'         =>$request-> nisn,
-        'alamat'       =>$request-> alamat,
-        'email'        =>$request-> email,
-        'password'     =>$request-> password,
-        'no_handphone' =>$request-> no_handphone
+        'clas_id'      =>$request->kelas_id,
+        'name'         =>$request->name,
+        'nisn'         =>$request->nisn,
+        'alamat'       =>$request->alamat,
+        'email'        =>$request->email,
+        'password'     =>$request->password,
+        'no_handphone' =>$request->no_handphone
         ];
-        //masukan data ke dalam tabel user
-User::create($datasiswa_store);
 
-//arahkan user ke halaman beranda
-        return redirect('/');
+        //upload gambar 
+        $datasiswa_store['photo'] =$request->file('photo')->store('profilesiswa', 'public');
+    
+        //masukan data ke dalam tabel user
+        User::create($datasiswa_store);
+
+        //arahkan user ke halaman beranda
+        return redirect('/')->with('success', 'Data Siswa Berhasil Disi,pan');
     }
 }

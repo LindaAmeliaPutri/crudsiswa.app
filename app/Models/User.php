@@ -44,6 +44,6 @@ class User extends Authenticatable
         ];
     }
     public function clas(){
-        return $this->blongsTo(Clas::class,"class_id");
+        return $this->belongsTo(Clas::class,"clas_id");
     }
 }

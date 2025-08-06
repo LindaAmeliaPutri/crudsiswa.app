@@ -9,18 +9,18 @@
 <body>
     <h1>Tambahkan Data Siswa</h1>
     <p>Halaman Untuk Menambah Data Siswa</p>
-    <form action="/siswa/store" method="POST">
+    <form action="/siswa/store" method="POST" enctype="multipart/form-data">
         @csrf
         <div>
             <label>Class Id</label>
             <br>
-            <select name="clas_id">
-                <option value="1">XII PPLG 1</option>
-                <option value="2">XII PPLG 2</option>
-                <option value="3">XII PPLG 3</option>
+            <select name="kelas_id">
+               @foreach ($clases as $clas)  
+            <option value="{{ $clas->id}}">{{$clas->nama}}</option>
+            @endforeach
             </select>
-            <br>
-            @error('kelas_id')
+            <br> 
+             @error ('kelas_id')
                 <small style="color:red">{{ $message }}</small>
             @enderror
         </div>
@@ -29,7 +29,7 @@
             <label>Nama</label>
             <br>
             <input type="text" name="name"><br>
-            @error('name')
+            @error('nisn')
                 <small style="color:red">{{ $message }}</small>
             @enderror
         </div>
@@ -83,6 +83,11 @@
             <label>Foto</label>
             <br>
             <input type="file" name="photo"> 
+            <br>
+            @error('photo')
+                <small style="color:red">{{$message}}</small>
+            @enderror
+
         </div>
         <br>
         <div>
