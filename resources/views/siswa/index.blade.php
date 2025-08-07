@@ -29,7 +29,7 @@
                     <td>
                         <a href="">Edit</a>
                         <a href="">Detail</a>
-                        <a href="">Delet</a>
+                        <a onclick="return confirm('yakin?')" href="/siswa/delete/{{$siswa->id}}">Delete</a>
                     </td>
                 </tr>
                @endforeach
