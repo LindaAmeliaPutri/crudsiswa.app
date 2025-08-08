@@ -80,4 +80,21 @@ return redirect('/');
 
 }
 
+// untuk menampilkan view detail siswa
+public function show($id){
+    // dd("Berhasil");
+
+    $datauser = User::find($id);
+
+    if($datauser == null ) {
+        return redirect('/');
+    }
+
+
+    //kembali ke user ke halaman show dan kirimkan data user yang di ambil berdasarkan id
+    return view('siswa.show', compact('datauser'));
 }
+}
+
+
+
