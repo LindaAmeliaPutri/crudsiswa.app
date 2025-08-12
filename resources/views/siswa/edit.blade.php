@@ -7,17 +7,20 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Tambahkan Data Siswa</h1>
+    <h1>Edit Data Siswa</h1>
     <p>Halaman Untuk Menambah Data Siswa</p>
-    <form action="/siswa/update/{{ $datauser->id }}" method="POST" enctype="multipart/form-data">
+    <img width="70" src="{{asset('storage/' .$datauser->photo)}}" alt="">
+    <form action="/siswa/update/{{ $datauser->id}}" method="POST" enctype="multipart/form-data">
         @csrf
         <div>
             <label>Class Id</label>
             <br>
-            <select name="kelas_id">
-               @foreach ($clases as $clas)  
-            <option value="{{ $clas->id}}">{{$clas->nama}}</option>
-            @endforeach
+                <select name="kelas_id">
+            @foreach ($clases as $clas)
+            <option value="{{ $clas->id }}" {{ $clas->id == $datauser->clas_id ? 'selected' : '' }}>
+                {{ $clas->nama }}
+            </option>
+                @endforeach
             </select>
             <br> 
              @error ('kelas_id')
@@ -28,7 +31,7 @@
         <div>
             <label>Nama</label>
             <br>
-            <input type="text" name="name"><br>
+            <input type="text" name="name" value="{{$datauser->name}}"><br>
             @error('nisn')
                 <small style="color:red">{{ $message }}</small>
             @enderror
@@ -37,7 +40,7 @@
         <div>
             <label>Nisn</label>
             <br>
-            <input type="text" name="nisn"><br>
+            <input type="text" name="nisn" value="{{$datauser->nisn}}"><br>
             @error('nisn')
                 <small style="color:red">{{ $message }}</small>
             @enderror 
@@ -46,7 +49,7 @@
         <div>
             <label>Alamat</label>
             <br>
-            <input type="text" name="alamat"><br>
+            <input type="text" name="alamat" value="{{$datauser->alamat}}"><br>
             @error('alamat')
                 <small style="color:red">{{ $message }}</small>
             @enderror 
@@ -55,7 +58,7 @@
         <div>
             <label>Email</label>
             <br>
-            <input type="text" name="email"> <br>
+            <input type="text" name="email" value="{{$datauser->email}}"><br>
             @error('email')
                 <small style="color:red">{{ $message }}</small>
             @enderror 
@@ -65,6 +68,7 @@
             <label>Password</label>
             <br>
             <input type="password" name="password"> <br>
+            <small style="color:red"> masukan password jika ingin di ubah</small><br>
             @error('password')
                 <small style="color:red">{{ $message }}</small>
             @enderror 
@@ -73,7 +77,7 @@
         <div>
             <label>No Telepon</label>
             <br>
-            <input type="tel" name="no_handphone"><br>
+            <input type="tel" name="no_handphone" value="{{$datauser->no_handphone}}"><br>
             @error('no_handphone')
                 <small style="color:red">{{ $message }}</small>
             @enderror 
