@@ -27,7 +27,7 @@
                     <td>{{$siswa->clas->nama}}</td>
                     <td>{{$siswa->alamat}}</td>
                     <td>
-                        <a href="">Edit</a>
+                        <a href="/siswa/edit/{{$siswa->id}}">Edit</a>
                         <a href="/siswa/show/{{ $siswa->id }}">Detail</a>
                         <a onclick="return confirm('yakin?')" href="/siswa/delete/{{$siswa->id}}">Delete</a>
                     </td>

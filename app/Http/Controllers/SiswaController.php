@@ -54,16 +54,15 @@ public function create(){
         'no_handphone' =>$request->no_handphone
         ];
 
-        //upload gambar 
-        $datasiswa_store['photo'] =$request->file('photo')->store('profilesiswa', 'public');
-    
-        //masukan data ke dalam tabel user
-        User::create($datasiswa_store);
+         if ($request->hasFile('photo')) {
+            Storage::disk('public')->delete($datasiswa->photo);
+            $datasiswa->photo = $request->file('photo')->store('profilesiswa', 'public');
+        }
 
-        //arahkan user ke halaman beranda
-        return redirect('/')->with('success', 'Data Siswa Berhasil Disi,pan');
+        $datasiswa->save();
+
+        return redirect('/')->with('success', 'Data Siswa Berhasil Diupdate');
     }
-
     //fungsi untuk delete data siswa
     public function destroy($id){
     //cari data user di database ada atau tidak
@@ -91,10 +90,54 @@ public function show($id){
     }
 
 
-    //kembali ke user ke halaman show dan kirimkan data user yang di ambil berdasarkan id
-    return view('siswa.show', compact('datauser'));
+    
+// kembali ke user ke halaman show dan kirimkan data user yang di ambil berdasarkan id
+return view('siswa.show', compact('datauser'));
+} 
+public function edit($id){
+    // siapkan data panggil data kelas 
+    $clases = Clas::all(); 
+    
+    // ambil data user / siswa dalam tabel user berdasarkan id
+    $datauser = User::find($id);
+
+    return view('siswa.edit', compact('clases', 'datauser'));
+}
+
+// fungsi data siswa
+public function update(Request $request,$id){
+    // falidasi data 
+    $validated= $request->validate([
+        'name'         =>'required',
+        'nisn'         =>'required ',
+        'alamat'       =>'required',
+        'email'        =>'required ',
+        'no_handphone' =>'required',
+    ]);
+
+    //cari di dalam tabel user apakah ada yang akan di update cari berdasarkan id
+    $datasiswa = User::find($id);
+
+
+    //siapkan data yang akan  di simpan sebagai update
+     $datasiswa_update=[
+        'clas_id'      =>$request->kelas_id,
+        'name'         =>$request->name,
+        'nisn'         =>$request->nisn,
+        'alamat'       =>$request->alamat,
+        'email'        =>$request->email,
+        'no_handphone' =>$request->no_handphone
+        ];
+ 
+
+    // simpan data dalam ke dalam database dengan  data yang terbaru sesuai update
+    $datasiswa->update ($datasiswa_update);
+
+    //pindah user ke halaman beranda
+    return redirect('/');
 }
 }
+
 
 
 
