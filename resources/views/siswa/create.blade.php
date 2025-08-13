@@ -9,7 +9,7 @@
 <body>
     <h1>Tambahkan Data Siswa</h1>
     <p>Halaman Untuk Menambah Data Siswa</p>
-    <form action="/siswa/update/{{ $datauser->id }}" method="POST" enctype="multipart/form-data">
+    <form action="/siswa/store" method="POST" enctype="multipart/form-data">
         @csrf
         <div>
             <label>Class Id</label>
