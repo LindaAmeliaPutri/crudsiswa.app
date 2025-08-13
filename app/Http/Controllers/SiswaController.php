@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Clas;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,134 +9,117 @@ use Illuminate\Support\Facades\Storage;
 
 class SiswaController extends Controller
 {
-//fungsi untuk mengarahkan ke halamn index sisa
-public function index(){ 
+    public function index()
+    {
+        $siswas = User::all();
+        return view('siswa.index', compact('siswas'));
+    }
 
-    //siapakan data siswa / panggil data kelas
-    $siswas = User::all();
+    public function create()
+    {
+        $clases = Clas::all();
+        return view('siswa.create', compact('clases'));
+    }
 
-    return view('siswa.index', compact('siswas')); 
-    
-}
+    public function store(Request $request)
+    {
+        // Validasi
+        $request->validate([
+            'kelas_id'      => 'required',
+            'name'          => 'required',
+            'nisn'          => 'required|unique:users,nisn',
+            'alamat'        => 'required',
+            'email'         => 'required|email|unique:users,email',
+            'password'      => 'required',
+            'no_handphone'  => 'required|unique:users,no_handphone',
+            'photo'         => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-//fungsi untuk mengarahkan ke halaman create
-public function create(){
-    //siapakan data / panggil data kelas
-    $clases = Clas::all();
-    return view('siswa.create', compact('clases'));
-
-}
-
-    public function store(Request $request){
-    //validasi data
-       $validated= $request->validate([
-        'name'         =>'required',
-        'kelas_id'     =>'required',
-        'nisn'         =>'required | unique:users,nisn',
-        'alamat'       =>'required',
-        'email'        =>'required | unique:users,email',
-        'password'     =>'required',
-        'no_handphone' =>'required | unique:users,no_handphone',
-        'photo'        =>'required |image|mimes:jpeg,png,jpg,gif',
-    ]);
-
-
-
-    //siapa data yang akan di masukan 
-     $datasiswa_store=[
-        'clas_id'      =>$request->kelas_id,
-        'name'         =>$request->name,
-        'nisn'         =>$request->nisn,
-        'alamat'       =>$request->alamat,
-        'email'        =>$request->email,
-        'password'     =>$request->password,
-        'no_handphone' =>$request->no_handphone
+        // Siapkan data
+        $datasiswa_store = [
+            'clas_id'      => $request->kelas_id, // sesuaikan nama kolom di DB
+            'name'         => $request->name,
+            'nisn'         => $request->nisn,
+            'alamat'       => $request->alamat,
+            'email'        => $request->email,
+            'password'     => bcrypt($request->password), // password di-hash
+            'no_handphone' => $request->no_handphone,
         ];
 
-         if ($request->hasFile('photo')) {
+        // Upload foto
+        $datasiswa_store['photo'] = $request->file('photo')->store('profilesiswa', 'public');
+
+        // Simpan ke DB
+        User::create($datasiswa_store);
+
+        return redirect('/')->with('success', 'Data siswa berhasil ditambahkan');
+    }
+
+    public function destroy($id)
+    {
+        $datasiswa = User::find($id);
+
+        if ($datasiswa) {
             Storage::disk('public')->delete($datasiswa->photo);
-            $datasiswa->photo = $request->file('photo')->store('profilesiswa', 'public');
+            $datasiswa->delete();
         }
 
-        $datasiswa->save();
-
-        return redirect('/')->with('success', 'Data Siswa Berhasil Diupdate');
-    }
-    //fungsi untuk delete data siswa
-    public function destroy($id){
-    //cari data user di database ada atau tidak
-    $datasiswa = User::find($id);
-
-    //cek apakah data user ada atau tidak
-     if ($datasiswa != null){
-      Storage::disk('public')->delete($datasiswa->photo);
-      $datasiswa->delete();
-}
-
-//kembalukan user ke home/beranda
-return redirect('/');
-
-}
-
-// untuk menampilkan view detail siswa
-public function show($id){
-    // dd("Berhasil");
-
-    $datauser = User::find($id);
-
-    if($datauser == null ) {
         return redirect('/');
     }
 
+    public function show($id)
+    {
+        $datauser = User::find($id);
+        if (!$datauser) {
+            return redirect('/');
+        }
+        return view('siswa.show', compact('datauser'));
+    }
 
-    
-// kembali ke user ke halaman show dan kirimkan data user yang di ambil berdasarkan id
-return view('siswa.show', compact('datauser'));
-} 
-public function edit($id){
-    // siapkan data panggil data kelas 
-    $clases = Clas::all(); 
-    
-    // ambil data user / siswa dalam tabel user berdasarkan id
-    $datauser = User::find($id);
+    public function edit($id)
+    {
+        $clases = Clas::all();
+        $datauser = User::find($id);
 
-    return view('siswa.edit', compact('clases', 'datauser'));
-}
+        if (!$datauser) {
+            return redirect('/');
+        }
 
-// fungsi data siswa
-public function update(Request $request,$id){
-    // falidasi data 
-    $validated= $request->validate([
-        'name'         =>'required',
-        'nisn'         =>'required ',
-        'alamat'       =>'required',
-        'email'        =>'required ',
-        'no_handphone' =>'required',
-    ]);
+        return view('siswa.edit', compact('clases', 'datauser'));
+    }
 
-    //cari di dalam tabel user apakah ada yang akan di update cari berdasarkan id
-    $datasiswa = User::find($id);
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name'          => 'required',
+            'nisn'          => 'required',
+            'alamat'        => 'required',
+            'email'         => 'required',
+            'no_handphone'  => 'required',
+        ]);
 
+        $datasiswa = User::find($id);
 
-    //siapkan data yang akan  di simpan sebagai update
-     $datasiswa_update=[
-        'clas_id'      =>$request->kelas_id,
-        'name'         =>$request->name,
-        'nisn'         =>$request->nisn,
-        'alamat'       =>$request->alamat,
-        'email'        =>$request->email,
-        'no_handphone' =>$request->no_handphone
+        $datasiswa_update = [
+            'clas_id'      => $request->kelas_id,
+            'name'         => $request->name,
+            'nisn'         => $request->nisn,
+            'alamat'       => $request->alamat,
+            'email'        => $request->email,
+            'no_handphone' => $request->no_handphone,
         ];
- 
 
-    // simpan data dalam ke dalam database dengan  data yang terbaru sesuai update
-    $datasiswa->update ($datasiswa_update);
+        if ($request->password) {
+            $datasiswa_update['password'] = bcrypt($request->password);
+        }
 
-    //pindah user ke halaman beranda
-    return redirect('/');
+        if ($request->hasFile('photo')) {
+            Storage::disk('public')->delete($datasiswa->photo);
+            $datasiswa_update['photo'] = $request->file('photo')->store('profilesiswa', 'public');
+        }
+
+        $datasiswa->update($datasiswa_update);
+
+        return redirect('/');
+    }
 }
-}
-
-
-
-
